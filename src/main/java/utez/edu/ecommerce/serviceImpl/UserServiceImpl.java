@@ -60,6 +60,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User authenticateUser(String email, String password) {
+        Optional<User> userOptional = userRepository.findByEmailAndPassword(email, password);
+        return userOptional.orElse(null);
+    }
+
+    @Override
     public void deleteUser(long userId) {
         userRepository.deleteById(userId);
     }

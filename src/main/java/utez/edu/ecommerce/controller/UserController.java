@@ -74,6 +74,23 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<Message<User>> loginUser(@RequestBody User loginUser) {
+        User authenticatedUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
+        Message<User> response = new Message<>();
+
+        if (authenticatedUser != null) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(authenticatedUser);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("error: usuario no autorizado");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+    }
+
 
     @PutMapping("/{userId}")
     public ResponseEntity<Message<User>> updateUser(@PathVariable long userId, @RequestBody User user) {

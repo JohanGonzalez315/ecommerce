@@ -31,5 +31,7 @@ public class Product {
     private String description;
     @Column(name = "tags", nullable = false, length = 255)
     private String tags;
-
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.PERSIST)
+    private List<OrderItem> orderItems;
+    
 }

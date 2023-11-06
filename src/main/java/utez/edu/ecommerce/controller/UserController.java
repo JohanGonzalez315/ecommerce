@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import utez.edu.ecommerce.entity.User;
 import utez.edu.ecommerce.service.UserService;
 import utez.edu.ecommerce.utils.Message;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
 
     @Autowired
     public UserController(UserService userService) {
@@ -58,12 +60,15 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Message<User>> createUser(@RequestBody User user) {
+
         if (userService.existsByEmail(user.getEmail())) {
             Message<User> response = new Message<>();
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage("error: el correo electrónico ya está registrado.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+        String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+        user.setPassword(hashedPassword);
 
         User createdUser = userService.createUser(user);
         Message<User> response = new Message<>();
@@ -76,13 +81,13 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<Message<User>> loginUser(@RequestBody User loginUser) {
-        User authenticatedUser = userService.authenticateUser(loginUser.getEmail(), loginUser.getPassword());
+        User user = userService.getUserByEmail(loginUser.getEmail());
         Message<User> response = new Message<>();
 
-        if (authenticatedUser != null) {
+        if (user != null && BCrypt.checkpw(loginUser.getPassword(), user.getPassword())) {
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("success");
-            response.setData(authenticatedUser);
+            response.setData(user);
             return ResponseEntity.ok(response);
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

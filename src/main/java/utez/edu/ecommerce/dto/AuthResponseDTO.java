@@ -7,10 +7,12 @@ import utez.edu.ecommerce.entity.User;
 public class AuthResponseDTO {
     private User user;
     private String accessToken;
+    private int status;
     private String tokenType = "Bearer";
 
-    public AuthResponseDTO(String accessToken, User user) {
+    public AuthResponseDTO(String accessToken, User user, int status) {
         this.accessToken = accessToken;
         this.user = user;
+        this.status = status;
     }
 }

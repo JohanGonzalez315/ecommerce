@@ -48,4 +48,17 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(long productId) {
         productRepository.deleteById(productId);
     }
+
+    @Override
+    public List<Product> getProductsByCategory(String categoryName) {
+        return productRepository.findByCategoryName(categoryName);
+    }
+
+    @Override
+    public List<Product> getProductsByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name);
+    }
+
+
+
 }

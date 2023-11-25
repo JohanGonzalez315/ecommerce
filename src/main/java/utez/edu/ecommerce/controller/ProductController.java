@@ -84,6 +84,40 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/category/{categoryName}")
+    public ResponseEntity<Message<List<Product>>> getProductsByCategory(@PathVariable String categoryName) {
+        List<Product> products = productService.getProductsByCategory(categoryName);
+        Message<List<Product>> response = new Message<>();
+
+        if (products != null && !products.isEmpty()) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(products);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no products found for the category");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Message<List<Product>>> searchProductsByName(@RequestParam String name) {
+        List<Product> products = productService.getProductsByName(name);
+        Message<List<Product>> response = new Message<>();
+
+        if (products != null && !products.isEmpty()) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(products);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no products found for the given name");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long productId) {
         productService.deleteProduct(productId);

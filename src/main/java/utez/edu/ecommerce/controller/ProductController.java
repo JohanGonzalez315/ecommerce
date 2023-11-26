@@ -14,6 +14,7 @@ import utez.edu.ecommerce.utils.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/products")
@@ -163,6 +164,75 @@ public class ProductController {
        }
    }
     
+
+    @GetMapping("/category/{categoryName}")
+    public ResponseEntity<Message<List<Product>>> getProductsByCategory(@PathVariable String categoryName) {
+        List<Product> products = productService.getProductsByCategory(categoryName);
+        Message<List<Product>> response = new Message<>();
+
+        if (products != null && !products.isEmpty()) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(products);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no products found for the category");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Message<List<Product>>> searchProductsByName(@RequestParam String name) {
+        List<Product> products = productService.getProductsByName(name);
+        Message<List<Product>> response = new Message<>();
+
+        if (products != null && !products.isEmpty()) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(products);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no products found for the given name");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+    @GetMapping("/top-selling")
+    public ResponseEntity<Message<List<Product>>> getTopSellingProducts(@RequestParam int limit) {
+        List<Product> topSellingProducts = productService.getTopSellingProducts(limit);
+        Message<List<Product>> response = new Message<>();
+
+        if (!topSellingProducts.isEmpty()) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(topSellingProducts);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no top selling products found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+
+    @GetMapping("/most-sold-categories")
+    public ResponseEntity<Message<List<Map<String, Object>>>> getMostSoldCategories() {
+        List<Map<String, Object>> mostSoldCategories = productService.getMostSoldCategories();
+        Message<List<Map<String, Object>>> response = new Message<>();
+
+        if (!mostSoldCategories.isEmpty()) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(mostSoldCategories);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no categories found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable long productId) {

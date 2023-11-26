@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,24 +62,33 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User loginUser){
+    public ResponseEntity<?> login(@RequestBody User loginUser) {
         User user = userService.getUserByEmail(loginUser.getEmail());
         if (user != null) {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginUser.getEmail(),
-                            loginUser.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            String token = jwtGenerator.generateToken(authentication);
-            return new ResponseEntity<>(new AuthResponseDTO(token, user), HttpStatus.OK);
+            try {
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                loginUser.getEmail(),
+                                loginUser.getPassword()));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String token = jwtGenerator.generateToken(authentication);
+                return new ResponseEntity<>(new AuthResponseDTO(token, user, HttpStatus.OK.value()), HttpStatus.OK);
+            } catch (AuthenticationException e) {
+                // Las credenciales son inválidas
+                Message<User> response = new Message<>();
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setMessage("error: credenciales inválidas");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            }
         } else {
+            // Usuario no encontrado
             Message<User> response = new Message<>();
             response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.setMessage("error: user not found");
+            response.setMessage("error: usuario no encontrado");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
     }
+
 
 
     @PostMapping("/register")

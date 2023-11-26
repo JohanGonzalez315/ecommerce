@@ -7,7 +7,8 @@ import lombok.Data;
 @Table(name = "seller_identity")
 @Data
 public class SellerIdentity {
-    @Id
+    
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long idSeller;
     @OneToOne
@@ -23,6 +24,23 @@ public class SellerIdentity {
     private double rating;
     @Column(name = "status", nullable = false)
     private boolean status = true;
+    
+    public SellerIdentity() {
+    	
+    }
+    
+    public SellerIdentity(long idSeller, User user, String rfc, String ineLink, String shopType, double rating,
+			boolean status) {
+		super();
+		this.idSeller = idSeller;
+		this.user = user;
+		this.rfc = rfc;
+		this.ineLink = ineLink;
+		this.shopType = shopType;
+		this.rating = rating;
+		this.status = status;
+	}
+
 
     @PrePersist
     public void prePersist(){this.status = true; this.rating=0;}

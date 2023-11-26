@@ -1,12 +1,15 @@
 package utez.edu.ecommerce.serviceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import utez.edu.ecommerce.entity.Product;
 import utez.edu.ecommerce.repository.ProductRepository;
 import utez.edu.ecommerce.service.ProductService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -58,7 +61,15 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> getProductsByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name);
     }
+    @Override
+    public List<Product> getTopSellingProducts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return productRepository.findTopProductsByQuantitySold(pageable);
+    }
 
-
+    @Override
+    public List<Map<String, Object>> getMostSoldCategories() {
+        return productRepository.getMostSoldCategories();
+    }
 
 }

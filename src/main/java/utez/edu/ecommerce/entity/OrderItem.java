@@ -18,7 +18,7 @@ public class OrderItem {
     @JoinColumn(name = "idUser")
     private User user;
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createdAt", nullable = false)
+    @Column(name = "createdAt")
     private Date createdAt;
     @ManyToMany
     @JoinTable(

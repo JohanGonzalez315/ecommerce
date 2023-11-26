@@ -1,5 +1,6 @@
 package utez.edu.ecommerce.serviceImpl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utez.edu.ecommerce.entity.WishList;
@@ -51,5 +52,11 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public List<WishList> getWishListByUser(long idUser) {
         return wishListRepository.findByUser_IdUser(idUser);
+    }
+
+    @Transactional
+    @Override
+    public void deleteWishListById(long id) {
+        wishListRepository.deleteById(id);
     }
 }

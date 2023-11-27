@@ -27,8 +27,9 @@ public class Product {
     @JoinColumn(name = "idSeller")
     private SellerIdentity seller;
     @ElementCollection
+    @CollectionTable(name = "product_image_links", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_link")
-    private List<String> imageLinks;
+    private List<ProductImage> imageLinks;
     @Column(name = "description", nullable = false, length = 255)
     private String description;
     @Column(name = "tags", nullable = false, length = 255)

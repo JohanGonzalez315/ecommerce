@@ -11,6 +11,7 @@ import utez.edu.ecommerce.service.WishListService;
 import utez.edu.ecommerce.utils.Message;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -85,12 +86,6 @@ public class WishListController {
         }
     }
 
-    @DeleteMapping("/{wishListId}")
-    public ResponseEntity<Void> deleteWishList(@PathVariable long wishListId) {
-        wishListService.deleteWishList(wishListId);
-        return ResponseEntity.noContent().build();
-    }
-
     /*@GetMapping("/user/{userId}")
     public ResponseEntity<List<WishList>> getWishListByUser(@PathVariable long userId) {
         List<WishList> wishLists = wishListService.getWishListByUser(userId);
@@ -117,6 +112,22 @@ public class WishListController {
             response.setData(products);
             return ResponseEntity.ok(response);
         }
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Message<String>> deleteWishList(@PathVariable long id) {
+        WishList wishList = wishListService.getWishListById(id);
+        if (wishList != null) {
+            wishListService.deleteWishListById(id);
+            Message<String> response = new Message<>();
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success: wishlist deleted");
+            return ResponseEntity.ok(response);
+        } else {
+            Message<String> response = new Message<>();
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: wishlist not found with ID: " + id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 }

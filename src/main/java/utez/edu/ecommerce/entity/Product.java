@@ -18,6 +18,8 @@ public class Product {
     private double price;
     @Column(name = "quantityAvailable", nullable = false)
     private int quantityAvailable;
+    @Column(name = "quantitySold", nullable = false)
+    private int quantitySold;
     @ManyToOne
     @JoinColumn(name = "idCategory")
     private Category category;
@@ -34,5 +36,8 @@ public class Product {
     private String tags;
     @ManyToMany(mappedBy = "products", cascade = CascadeType.PERSIST)
     private List<OrderItem> orderItems;
+
+    @PrePersist
+    public void prePersist(){this.quantitySold=0;}
     
 }

@@ -19,7 +19,6 @@ public class OrderItemServiceImpl implements OrderItemService {
         this.orderItemRepository = orderItemRepository;
     }
 
-
     @Override
     public List<OrderItem> getAllOrderItems() {
         return orderItemRepository.findAll();
@@ -27,8 +26,13 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItem getOrderItemById(long orderItemId) {
-        Optional<OrderItem> orderItem = orderItemRepository.findById(orderItemId);
-        return orderItem.orElse(null);
+        Optional<OrderItem> optionalOrderItem = orderItemRepository.findById(orderItemId);
+        return optionalOrderItem.orElse(null);
+    }
+
+    @Override
+    public OrderItem getOrderItemWithProductsByUserId(long userId) {
+        return orderItemRepository.findOrderItemByUserId(userId);
     }
 
     @Override
@@ -38,9 +42,13 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItem updateOrderItem(long orderItemId, OrderItem orderItem) {
-        if (orderItemRepository.existsById(orderItemId)) {
-            orderItem.setIdOrderItems(orderItemId);
-            return orderItemRepository.save(orderItem);
+        Optional<OrderItem> optionalOrderItem = orderItemRepository.findById(orderItemId);
+        if (optionalOrderItem.isPresent()) {
+            OrderItem existingOrderItem = optionalOrderItem.get();
+            // Actualizar los campos relevantes de existingOrderItem con los de orderItem recibido
+            // existingOrderItem.setXXX(orderItem.getXXX()); // Cambiar XXX por los campos que se deben actualizar
+            // Guardar los cambios en la base de datos
+            return orderItemRepository.save(existingOrderItem);
         }
         return null;
     }

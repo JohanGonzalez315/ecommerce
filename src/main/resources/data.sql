@@ -40,8 +40,8 @@ VALUES
     ('Fitbit Versa 3', 'Smartwatch con seguimiento avanzado de actividad física y monitoreo de salud.', 1200.00, 22, 0, 'fitbit, smartwatch, salud', 2, 1),
     ('Bose QuietComfort 45', 'Audífonos inalámbricos con cancelación de ruido y sonido de alta calidad.', 2800.00, 10, 0, 'bose, audífonos, música', 1, 2),
     ('GoPro Hero 10 Black', 'Cámara de acción con capacidad para grabar videos en 5.3K y capturar fotos de alta resolución.', 4500.00, 15, 0, 'gopro, cámara, acción', 4, 1);
-
-INSERT INTO product_image_links(product_id_product, image_link)
+/*
+INSERT INTO product_image_links(id, image_link)
 VALUES (1,'https://ishopmx.vtexassets.com/arquivos/ids/219429-800-auto?v=637998065132630000&width=800&height=auto&aspect=true'),
        (1, 'https://www.apple.com/newsroom/images/product/iphone/geo/Apple-iPhone-14-Pro-iPhone-14-Pro-Max-gold-220907-geo_inline.jpg.large.jpg'),
        (1, 'https://powermaccenter.com/cdn/shop/files/iPhone_14_Pro_Max_Deep_Purple_PDP_Image_Position-1a__en-US.jpg?v=1689792112'),
@@ -73,3 +73,4 @@ VALUES (1,'https://ishopmx.vtexassets.com/arquivos/ids/219429-800-auto?v=6379980
        (11, 'https://static.gopro.com/assets/blta2b8522e5372af40/blt5f9f7914f505c38d/643ee10de8155811eeeadfa5/pdp-h10-image01-1024-2x.png'),
        (11, 'https://www.digital2home.com/wp-content/uploads/2023/01/1661877324_1658382.jpg'),
        (11, 'https://www.cordobadigital.net/wp-content/uploads/2021/10/pdp-h10b-standalone-gallery-3.png');
+*/

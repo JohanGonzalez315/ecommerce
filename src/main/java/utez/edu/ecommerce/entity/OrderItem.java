@@ -20,22 +20,13 @@ public class OrderItem {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "createdAt")
     private Date createdAt;
-    @ManyToMany
-    @JoinTable(
-            name = "order_item_product",
-            joinColumns = @JoinColumn(name = "order_item_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products;
     @Column(name = "status", nullable = false, length = 255)
     private String status;
     @Column(name = "subTotal")
     private double subTotal;
+    @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItemProduct> orderItemProducts = new ArrayList<>();
 
     @PrePersist
     public void prePersist(){this.status = "Pendiente"; this.createdAt = new Date();}
-
-    public OrderItem() {
-        this.products = new ArrayList<>();
-    }
 }

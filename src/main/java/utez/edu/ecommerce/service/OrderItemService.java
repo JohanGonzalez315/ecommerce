@@ -10,4 +10,6 @@ public interface OrderItemService {
     OrderItem createOrderItem(OrderItem orderItem);
     OrderItem updateOrderItem(long orderItemId, OrderItem orderItem);
     void deleteOrderItem(long orderItemId);
+    OrderItem getOrderItemWithProductsByUserId(long userId);
+
 }

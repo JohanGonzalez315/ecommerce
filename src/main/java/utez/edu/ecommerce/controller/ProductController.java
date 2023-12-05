@@ -139,6 +139,19 @@ public class ProductController {
         }
     }
    
+   @PostMapping("/mobile")
+   public ResponseEntity<Message<Product>> createProductMobile(@RequestBody Product product) {
+   	List<ProductImage> savedImagesFiles = new ArrayList<>();
+   	product.setImageLinks(savedImagesFiles);
+   	Product createdProduct = productService.createProduct(product);
+       Message<Product> response = new Message<>();
+
+       response.setStatus(HttpStatus.CREATED.value());
+       response.setMessage("success");
+       response.setData(createdProduct);
+       return ResponseEntity.status(HttpStatus.CREATED).body(response);
+   }
+   
    @PostMapping("addImages/{productId}")
    public ResponseEntity<Message<Product>> addProductImages(@PathVariable long productId, @RequestPart List<MultipartFile> images) {
    	Product product = productService.getProductById(productId);

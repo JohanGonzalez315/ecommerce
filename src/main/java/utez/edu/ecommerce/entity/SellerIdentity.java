@@ -20,10 +20,10 @@ public class SellerIdentity {
     private String ineLink;
     @Column(name = "shopType", nullable = false, length = 255)
     private String shopType;
-    @Column(name = "rating", nullable = false, length = 255)
-    private double rating;
+    @Column(name = "rating", nullable = false, length = 255 )
+    private double rating = 0.0;
     @Column(name = "status", nullable = false)
-    private boolean status = true;
+    private boolean status = false;
     
     public SellerIdentity() {
     	
@@ -41,9 +41,6 @@ public class SellerIdentity {
 		this.status = status;
 	}
 
-
-    @PrePersist
-    public void prePersist(){this.status = true; this.rating=0;}
 
     @Override
     public String toString() {

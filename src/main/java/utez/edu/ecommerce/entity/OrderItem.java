@@ -22,7 +22,7 @@ public class OrderItem {
     @Column(name = "createdAt")
     private Date createdAt;
     @Column(name = "status", nullable = false, length = 255)
-    private String status;
+    private String status = "Pendiente";
     @Column(name = "subTotal")
     private double subTotal;
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -30,6 +30,7 @@ public class OrderItem {
 
     @PrePersist
     public void prePersist(){this.createdAt = new Date();}
+
 
     public BigDecimal calculateTotalPrice() {
         BigDecimal totalPrice = BigDecimal.ZERO;

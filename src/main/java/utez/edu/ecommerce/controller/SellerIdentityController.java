@@ -5,8 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utez.edu.ecommerce.entity.SellerIdentity;
+import utez.edu.ecommerce.entity.User;
 import utez.edu.ecommerce.service.SellerIdentityService;
 import utez.edu.ecommerce.service.UserService;
+import utez.edu.ecommerce.serviceImpl.EmailService;
 import utez.edu.ecommerce.utils.Message;
 
 import java.util.List;
@@ -18,11 +20,13 @@ public class SellerIdentityController {
 
     private final SellerIdentityService sellerIdentityService;
     private final UserService userService;
+    private final EmailService emailService;
 
     @Autowired
-    public SellerIdentityController(SellerIdentityService sellerIdentityService, UserService userService) {
+    public SellerIdentityController(SellerIdentityService sellerIdentityService, UserService userService, EmailService emailService) {
         this.sellerIdentityService = sellerIdentityService;
         this.userService = userService;
+        this.emailService = emailService;
     }
 
 
@@ -88,6 +92,38 @@ public class SellerIdentityController {
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("Success");
             response.setData(updatedSeller);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("Seller not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+    
+    
+    @PutMapping("applicationResponse/{sellerId}")
+    public ResponseEntity<Message<?>> applicationResponse(@PathVariable long sellerId, @RequestParam boolean status) {
+    	SellerIdentity seller = sellerIdentityService.getSellerById(sellerId);
+    	seller.setStatus(status);
+        SellerIdentity updatedSeller = sellerIdentityService.updateUser(sellerId, seller);
+        User user = userService.getUserById(seller.getUser().getIdUser());
+        user.setStatus(status);
+        userService.updateUser(user.getIdUser(), user);
+    	if(status) {
+    		emailService.sendMail(seller.getUser().getEmail(),"¡Bienvenido a SaleHub!", "¡" +seller.getUser().getName() +" "+seller.getUser().getLastname() +" has sido aceptado para formar parte de nuestros vendedores! \n\n Inicia sesión en tu cuenta con tu correo y contraseña previamente registrados");
+    	}else {
+    		emailService.sendMail(seller.getUser().getEmail(),"¡Solicitud Rechazada!", seller.getUser().getName() +" "+seller.getUser().getLastname() +" Lamentamos informarte que el equipo de SaleHub ha determinado que no eres candidato a ser vendedor en nuestra plataforma... \n\n Contáctanos en: notification.salehub@gmail.com");
+    	}
+    	
+        Message<SellerIdentity> response = new Message<>();
+
+        if (updatedSeller != null) {
+            response.setStatus(HttpStatus.OK.value());
+            if(status) {
+            	response.setMessage("Solicitud aceptada!");
+            }else {
+            	response.setMessage("Solicitud rechazada!");
+            }
             return ResponseEntity.ok(response);
         } else {
             response.setStatus(HttpStatus.NOT_FOUND.value());

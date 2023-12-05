@@ -21,12 +21,12 @@ public class OrderItem {
     @Column(name = "createdAt")
     private Date createdAt;
     @Column(name = "status", nullable = false, length = 255)
-    private String status;
+    private String status = "Pendiente";
     @Column(name = "subTotal")
     private double subTotal;
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemProduct> orderItemProducts = new ArrayList<>();
 
     @PrePersist
-    public void prePersist(){this.status = "Pendiente"; this.createdAt = new Date();}
+    public void prePersist(){this.createdAt = new Date();}
 }

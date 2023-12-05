@@ -65,7 +65,9 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody User loginUser) {
         User user = userService.getUserByEmail(loginUser.getEmail());
         if (user != null) {
+        	
             try {
+            	if(user.isStatus()) {
                 Authentication authentication = authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
                                 loginUser.getEmail(),
@@ -73,6 +75,12 @@ public class AuthController {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 String token = jwtGenerator.generateToken(authentication);
                 return new ResponseEntity<>(new AuthResponseDTO(token, user, HttpStatus.OK.value()), HttpStatus.OK);
+            	}else {
+            		Message<User> response = new Message<>();
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setMessage("error: cuenta no autorizada");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            	}
             } catch (AuthenticationException e) {
                 // Las credenciales son inválidas
                 Message<User> response = new Message<>();
@@ -139,6 +147,42 @@ public class AuthController {
         response.setData(seller);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
+    }
+    
+    
+    @PostMapping("/registerSeller2")
+    public ResponseEntity<Message<?>> registerSeller2(@RequestBody SellerDataDTO seller) {
+    	if (userRepository.existsByEmail(seller.getSeller().getEmail())) {
+        	
+            Message<User> response = new Message<>();
+            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setMessage("error: el correo electrónico ya está registrado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        seller.getSeller().setPassword(passwordEncoder.encode((seller.getSeller().getPassword())));
+        seller.getSeller().setStatus(false);
+        User newUser = userRepository.save(seller.getSeller());
+        SellerIdentity identity = sellerIdentityServiceImpl.createUser(new SellerIdentity(0,newUser,seller.getRfc(),"",seller.getShopType(),0.0,true));
+        emailService.sendMail(newUser.getEmail(),"Solicitud de venta SaleHub","Hola "+seller.getSeller().getName()+" "+seller.getSeller().getLastname()+"\n\n"+"Tus datos se encuentran en revisión.\n\n Te mandaremos un correo con el resultado de tu solicitud en las proximas 24 horas...");
+        Message<SellerIdentity> response = new Message<>();
+        response.setStatus(HttpStatus.CREATED.value());
+        response.setMessage("Se ha enviado tu solicitud de vendedor. Revisa tu correo electrónico");
+        response.setData(identity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+    
+    @PostMapping("/addInePhoto/{idSeller}")
+    public ResponseEntity<Message<?>> addInePhoto(@PathVariable long idSeller,@RequestPart("ine") MultipartFile ine) {
+    	SellerIdentity seller = sellerIdentityServiceImpl.getSellerById(idSeller);
+    	String key = awss3ServiceImp.uploadFile(ine); 
+        String urlIne = awss3ServiceImp.getObjectUrl(key);
+        seller.setIneLink(urlIne);
+        sellerIdentityServiceImpl.updateUser(idSeller, seller);
+        Message<SellerIdentity> response = new Message<>();
+        response.setStatus(HttpStatus.CREATED.value());
+        response.setMessage("Identificación guardada exitosamente.");
+        response.setData(seller);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
     
     @PostMapping("/sendMailToken")

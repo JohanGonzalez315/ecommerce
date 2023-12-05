@@ -26,9 +26,7 @@ public class User {
     @Column(name = "status", nullable = false)
     private boolean status = true;
 
-    @PrePersist
-    public void prePersist(){this.status = true;}
-
+   
     @Override
     public String toString() {
         return "User{" +

@@ -6,6 +6,7 @@ import utez.edu.ecommerce.entity.OrderItem;
 import utez.edu.ecommerce.repository.OrderItemRepository;
 import utez.edu.ecommerce.service.OrderItemService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,12 +46,26 @@ public class OrderItemServiceImpl implements OrderItemService {
         Optional<OrderItem> optionalOrderItem = orderItemRepository.findById(orderItemId);
         if (optionalOrderItem.isPresent()) {
             OrderItem existingOrderItem = optionalOrderItem.get();
-            // Actualizar los campos relevantes de existingOrderItem con los de orderItem recibido
-            // existingOrderItem.setXXX(orderItem.getXXX()); // Cambiar XXX por los campos que se deben actualizar
-            // Guardar los cambios en la base de datos
+            existingOrderItem.setOrderItemProducts(orderItem.getOrderItemProducts());
+            existingOrderItem.setStatus(orderItem.getStatus());
+            existingOrderItem.setUser(orderItem.getUser());
+            existingOrderItem.setSubTotal(orderItem.getSubTotal());
             return orderItemRepository.save(existingOrderItem);
         }
         return null;
+    }
+    @Override
+    public BigDecimal getTotalOfOrderItems() {
+        List<OrderItem> orderItems = orderItemRepository.findAll();
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderItem orderItem : orderItems) {
+            total = total.add(orderItem.calculateTotalPrice());
+        }
+        return total;
+    }
+    @Override
+    public long countOrderItemsByStatusEntregado() {
+        return orderItemRepository.countByStatusEntregado();
     }
 
     @Override

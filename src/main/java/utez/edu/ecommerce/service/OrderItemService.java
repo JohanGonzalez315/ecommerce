@@ -2,6 +2,7 @@ package utez.edu.ecommerce.service;
 
 import utez.edu.ecommerce.entity.OrderItem;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderItemService {
@@ -11,5 +12,7 @@ public interface OrderItemService {
     OrderItem updateOrderItem(long orderItemId, OrderItem orderItem);
     void deleteOrderItem(long orderItemId);
     OrderItem getOrderItemWithProductsByUserId(long userId);
+    BigDecimal getTotalOfOrderItems();
+    long countOrderItemsByStatusEntregado();
 
 }

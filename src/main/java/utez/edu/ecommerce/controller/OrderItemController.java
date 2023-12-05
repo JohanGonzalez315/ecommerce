@@ -11,6 +11,7 @@ import utez.edu.ecommerce.service.OrderItemProductService;
 import utez.edu.ecommerce.service.OrderItemService;
 import utez.edu.ecommerce.utils.Message;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -56,6 +57,26 @@ public class OrderItemController {
             response.setMessage("error: no order item for this user");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    @GetMapping("/total")
+    public ResponseEntity<Message<BigDecimal>> getTotalOfOrderItems() {
+        BigDecimal total = orderItemService.getTotalOfOrderItems();
+        Message<BigDecimal> response = new Message<>();
+        response.setStatus(HttpStatus.CREATED.value());
+        response.setMessage("success");
+        response.setData(total);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/count-delivered")
+    public ResponseEntity<Message<Long>> countDeliveredOrderItems() {
+        long count = orderItemService.countOrderItemsByStatusEntregado();
+        Message<Long> response = new Message<>();
+        response.setStatus(HttpStatus.CREATED.value());
+        response.setMessage("success");
+        response.setData(count);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping

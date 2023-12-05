@@ -3,6 +3,7 @@ package utez.edu.ecommerce.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -29,4 +30,16 @@ public class OrderItem {
 
     @PrePersist
     public void prePersist(){this.createdAt = new Date();}
+
+
+    public BigDecimal calculateTotalPrice() {
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (OrderItemProduct orderItemProduct : this.orderItemProducts) {
+            BigDecimal price = BigDecimal.valueOf(orderItemProduct.getProduct().getPrice());
+            BigDecimal amount = BigDecimal.valueOf(orderItemProduct.getAmount());
+            totalPrice = totalPrice.add(price.multiply(amount));
+        }
+        return totalPrice;
+    }
+
 }

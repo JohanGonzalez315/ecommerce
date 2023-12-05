@@ -3,6 +3,7 @@ package utez.edu.ecommerce.serviceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utez.edu.ecommerce.entity.User;
+import utez.edu.ecommerce.repository.RolRepository;
 import utez.edu.ecommerce.repository.UserRepository;
 import utez.edu.ecommerce.service.UserService;
 

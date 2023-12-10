@@ -9,6 +9,7 @@ import utez.edu.ecommerce.entity.User;
 import utez.edu.ecommerce.entity.WishList;
 import utez.edu.ecommerce.service.WishListService;
 import utez.edu.ecommerce.utils.Message;
+import utez.edu.ecommerce.utils.WishListDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -93,10 +94,9 @@ public class WishListController {
     }*/
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<Message<List<Product>>> getWishListByUser(@PathVariable long userId) {
+    public ResponseEntity<Message<WishListDTO>> getWishListByUser(@PathVariable long userId) {
         List<WishList> wishList = wishListService.getWishListByUser(userId);
-        Message<List<Product>> response = new Message<>();
-
+        Message<WishListDTO> response = new Message<>();
         if (wishList == null || wishList.isEmpty()) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage("error: no wishlist found for this user");
@@ -106,10 +106,13 @@ public class WishListController {
             List<Product> products = wishList.stream()
                     .map(WishList::getProduct)
                     .collect(Collectors.toList());
-
+            WishListDTO responseDTO = new WishListDTO();
+            responseDTO.setIdWishList(wishList.get(0).getIdWishList());
+            responseDTO.setUser(wishList.get(0).getUser());
+            responseDTO.setData(products);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("success");
-            response.setData(products);
+            response.setData(responseDTO);
             return ResponseEntity.ok(response);
         }
     }
@@ -129,5 +132,15 @@ public class WishListController {
             response.setMessage("error: wishlist not found with ID: " + id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+    }
+
+    @GetMapping("/user/{userId}/product/{productId}")
+    public ResponseEntity<Message> isProductInWishList(@PathVariable long userId, @PathVariable long productId) {
+        boolean isProductInWishList = wishListService.isProductInWishList(userId, productId);
+        Message<String> response = new Message<>();
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("success: wishlist deleted");
+        response.setData("" + isProductInWishList);
+        return ResponseEntity.ok(response);
     }
 }

@@ -7,4 +7,5 @@ public interface OrderItemProductService {
     List<OrderItemProduct> getAllOrderItemProducts();
     OrderItemProduct createOrderItemProduct(OrderItemProduct orderItemProduct);
     void deleteOrderItemProduct(long orderItemProductId);
+    List<OrderItemProduct> getOrderItemProductsBySellerId(long sellerId);
 }

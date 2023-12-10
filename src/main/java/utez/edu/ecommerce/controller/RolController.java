@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import utez.edu.ecommerce.entity.Rol;
 import utez.edu.ecommerce.entity.User;
 import utez.edu.ecommerce.service.RolService;
 import utez.edu.ecommerce.utils.Message;

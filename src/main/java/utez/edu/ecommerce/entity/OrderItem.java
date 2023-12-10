@@ -30,8 +30,6 @@ public class OrderItem {
 
     @PrePersist
     public void prePersist(){this.createdAt = new Date();}
-
-
     public BigDecimal calculateTotalPrice() {
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (OrderItemProduct orderItemProduct : this.orderItemProducts) {

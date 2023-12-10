@@ -3,7 +3,6 @@ package utez.edu.ecommerce.serviceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utez.edu.ecommerce.entity.User;
-import utez.edu.ecommerce.repository.RolRepository;
 import utez.edu.ecommerce.repository.UserRepository;
 import utez.edu.ecommerce.service.UserService;
 
@@ -69,7 +68,6 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findByEmailAndPassword(email, password);
         return userOptional.orElse(null);
     }
-
     @Override
     public void deleteUser(long userId) {
         userRepository.deleteById(userId);

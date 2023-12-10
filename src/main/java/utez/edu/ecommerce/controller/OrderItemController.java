@@ -59,6 +59,22 @@ public class OrderItemController {
         }
     }
 
+    @GetMapping("/order-history/{sellerId}")
+    public ResponseEntity<Message<List<OrderItemProduct>>> getSellerOrderHistory(@PathVariable long sellerId) {
+        List<OrderItemProduct> sellerOrderHistory = orderItemProductService.getOrderItemProductsBySellerId(sellerId);
+        Message<List<OrderItemProduct>> response = new Message();
+        if(sellerOrderHistory.isEmpty() || sellerOrderHistory == null){
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no order items for this seller");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }else {
+            response.setStatus(HttpStatus.CREATED.value());
+            response.setMessage("success");
+            response.setData(sellerOrderHistory);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+    }
+
     @GetMapping("/total")
     public ResponseEntity<Message<BigDecimal>> getTotalOfOrderItems() {
         BigDecimal total = orderItemService.getTotalOfOrderItems();

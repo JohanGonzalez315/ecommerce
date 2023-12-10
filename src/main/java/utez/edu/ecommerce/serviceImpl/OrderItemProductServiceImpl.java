@@ -29,6 +29,11 @@ public class OrderItemProductServiceImpl implements OrderItemProductService {
     }
 
     @Override
+    public List<OrderItemProduct> getOrderItemProductsBySellerId(long sellerId) {
+        return orderItemProductRepository.findByProduct_Seller_IdSeller(sellerId);
+    }
+
+    @Override
     public void deleteOrderItemProduct(long orderItemProductId) {
         orderItemProductRepository.deleteById(orderItemProductId);
     }

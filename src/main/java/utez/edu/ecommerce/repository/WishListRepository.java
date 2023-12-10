@@ -1,6 +1,7 @@
 package utez.edu.ecommerce.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import utez.edu.ecommerce.entity.WishList;
@@ -13,4 +14,7 @@ public interface WishListRepository extends JpaRepository<WishList, Long> {
     @Query("SELECT CASE WHEN COUNT(w) > 0 THEN true ELSE false END FROM WishList w WHERE w.user.idUser = :userId AND w.product.idProduct = :productId")
     boolean existsByUser_IdUserAndProduct_IdProduct(@Param("userId") long userId, @Param("productId") long productId);
     void deleteByIdWishList(long id);
+    @Query("SELECT w FROM WishList w WHERE w.user.idUser = :userId AND w.product.idProduct = :productId")
+    WishList findByUserAndProduct(@Param("userId") long userId, @Param("productId") long productId);
+
 }

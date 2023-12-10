@@ -12,4 +12,6 @@ public interface WishListService {
     List<WishList> getWishListByUser(long userId);
     void deleteWishListById(long id);
     boolean isProductInWishList(long userId, long productId);
+    WishList findByUserAndProduct(long userId, long productId);
+    void deleteProductFromWishList(long userId, long productId);
 }

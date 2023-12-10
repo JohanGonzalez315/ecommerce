@@ -134,6 +134,23 @@ public class WishListController {
         }
     }
 
+    @DeleteMapping("/user/{userId}/product/{productId}")
+    public ResponseEntity<Message> deleteProductFromWishList(@PathVariable long userId, @PathVariable long productId) {
+        WishList productInWishList = wishListService.findByUserAndProduct(userId, productId);
+        Message<String> response = new Message<>();
+        if(productInWishList != null){
+            wishListService.deleteWishListById(productInWishList.getIdWishList());
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success: Product removed from wishlist");
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no exist this product in wishlist user: ");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+    }
+
     @GetMapping("/user/{userId}/product/{productId}")
     public ResponseEntity<Message> isProductInWishList(@PathVariable long userId, @PathVariable long productId) {
         boolean isProductInWishList = wishListService.isProductInWishList(userId, productId);

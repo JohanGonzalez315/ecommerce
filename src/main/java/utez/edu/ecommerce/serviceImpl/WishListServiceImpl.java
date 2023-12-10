@@ -43,7 +43,6 @@ public class WishListServiceImpl implements WishListService {
         }
         return null;
     }
-
     @Override
     public void deleteWishList(long wishListId) {
         wishListRepository.deleteById(wishListId);
@@ -53,6 +52,17 @@ public class WishListServiceImpl implements WishListService {
     public boolean isProductInWishList(long userId, long productId) {
         return wishListRepository.existsByUser_IdUserAndProduct_IdProduct(userId, productId);
     }
+
+    @Override
+    public WishList findByUserAndProduct(long userId, long productId) {
+        return wishListRepository.findByUserAndProduct(userId, productId);
+    }
+
+    @Override
+    public void deleteProductFromWishList(long userId, long productId) {
+
+    }
+
     @Override
     public List<WishList> getWishListByUser(long idUser) {
         return wishListRepository.findByUser_IdUser(idUser);

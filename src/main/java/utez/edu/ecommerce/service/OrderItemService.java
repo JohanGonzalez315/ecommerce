@@ -3,6 +3,7 @@ package utez.edu.ecommerce.service;
 import utez.edu.ecommerce.entity.OrderItem;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 public interface OrderItemService {
@@ -14,5 +15,6 @@ public interface OrderItemService {
     OrderItem getOrderItemWithProductsByUserId(long userId);
     BigDecimal getTotalOfOrderItems();
     long countOrderItemsByStatusEntregado();
+    int countTotalOrdersByMonth(Date date);
 
 }

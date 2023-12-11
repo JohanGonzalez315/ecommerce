@@ -27,4 +27,11 @@ public class OrderItemProduct {
     @JoinColumn(name = "idOrderItems")
     @JsonIgnore
     private OrderItem orderItem;
+
+    public SellerIdentity getSellerIdentity() {
+        if (this.getProduct() != null) {
+            return this.getProduct().getSeller();
+        }
+        return null;
+    }
 }

@@ -8,4 +8,5 @@ public interface OrderItemProductService {
     OrderItemProduct createOrderItemProduct(OrderItemProduct orderItemProduct);
     void deleteOrderItemProduct(long orderItemProductId);
     List<OrderItemProduct> getOrderItemProductsBySellerId(long sellerId);
+    int countOrderItemProductsBySellerIdentityId(long sellerId);
 }

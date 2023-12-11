@@ -29,6 +29,11 @@ public class OrderItemProductServiceImpl implements OrderItemProductService {
     }
 
     @Override
+    public int countOrderItemProductsBySellerIdentityId(long sellerId) {
+        return orderItemProductRepository.countBySellerIdentityId(sellerId);
+    }
+
+    @Override
     public List<OrderItemProduct> getOrderItemProductsBySellerId(long sellerId) {
         return orderItemProductRepository.findByProduct_Seller_IdSeller(sellerId);
     }

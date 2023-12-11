@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utez.edu.ecommerce.dto.OrderItemDTO;
 import utez.edu.ecommerce.entity.OrderItem;
 import utez.edu.ecommerce.entity.OrderItemProduct;
 import utez.edu.ecommerce.service.OrderItemProductService;
@@ -12,6 +13,8 @@ import utez.edu.ecommerce.service.OrderItemService;
 import utez.edu.ecommerce.utils.Message;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -73,6 +76,20 @@ public class OrderItemController {
             response.setData(sellerOrderHistory);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
+    }
+
+    @GetMapping("/count-orders-by-month")
+    public ResponseEntity<OrderItemDTO> countOrdersByMonth(@RequestParam int year, @RequestParam int month) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.MONTH, month - 1);
+        Date targetDate = calendar.getTime();
+        int totalOrders = orderItemService.countTotalOrdersByMonth(targetDate);
+        OrderItemDTO response = new OrderItemDTO();
+        response.setStatus(HttpStatus.CREATED.value());
+        response.setMessage("success");
+        response.setData(totalOrders);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/total")

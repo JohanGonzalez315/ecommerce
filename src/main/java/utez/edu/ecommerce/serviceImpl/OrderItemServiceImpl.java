@@ -7,6 +7,7 @@ import utez.edu.ecommerce.repository.OrderItemRepository;
 import utez.edu.ecommerce.service.OrderItemService;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,11 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public OrderItem getOrderItemWithProductsByUserId(long userId) {
         return orderItemRepository.findOrderItemByUserId(userId);
+    }
+
+    @Override
+    public int countTotalOrdersByMonth(Date date) {
+        return orderItemRepository.countTotalOrdersByMonth(date);
     }
 
     @Override

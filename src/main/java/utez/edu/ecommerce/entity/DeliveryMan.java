@@ -15,7 +15,7 @@ public class DeliveryMan {
     private User user;
     @Column(name = "license_photo", nullable = false, length = 255)
     private String licensePhoto;
-    @ManyToOne
-    @JoinColumn(name = "idSeller")
-    private SellerIdentity sellerIdentity;
+    @Column(name = "available")
+    private boolean available;
+
 }

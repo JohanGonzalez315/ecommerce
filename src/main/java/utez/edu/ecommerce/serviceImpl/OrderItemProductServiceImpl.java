@@ -6,6 +6,7 @@ import utez.edu.ecommerce.entity.OrderItemProduct;
 import utez.edu.ecommerce.repository.OrderItemProductRepository;
 import utez.edu.ecommerce.service.OrderItemProductService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -42,4 +43,15 @@ public class OrderItemProductServiceImpl implements OrderItemProductService {
     public void deleteOrderItemProduct(long orderItemProductId) {
         orderItemProductRepository.deleteById(orderItemProductId);
     }
+
+    @Override
+    public long countOrdersBySellerId(long sellerId) {
+        return orderItemProductRepository.countOrdersBySellerId(sellerId);
+    }
+
+    @Override
+    public BigDecimal getTotalIncomeBySellerId(long sellerId) {
+        return orderItemProductRepository.sumTotalIncomeBySellerId(sellerId);
+    }
+
 }

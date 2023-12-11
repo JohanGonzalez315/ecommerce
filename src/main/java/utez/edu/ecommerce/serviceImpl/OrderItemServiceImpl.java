@@ -70,12 +70,14 @@ public class OrderItemServiceImpl implements OrderItemService {
         return total;
     }
     @Override
-    public long countOrderItemsByStatusEntregado() {
-        return orderItemRepository.countByStatusEntregado();
+    public long countOrderItemsByStatusEntregado(String status) {
+        return orderItemRepository.countByStatusEntregado(status);
     }
 
     @Override
     public void deleteOrderItem(long orderItemId) {
         orderItemRepository.deleteById(orderItemId);
     }
+
+
 }

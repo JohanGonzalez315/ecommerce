@@ -6,10 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import utez.edu.ecommerce.dto.OrderItemDTO;
+import utez.edu.ecommerce.entity.DeliveryMan;
 import utez.edu.ecommerce.entity.OrderItem;
 import utez.edu.ecommerce.entity.OrderItemProduct;
+import utez.edu.ecommerce.entity.Product;
+import utez.edu.ecommerce.service.DeliveryManService;
 import utez.edu.ecommerce.service.OrderItemProductService;
 import utez.edu.ecommerce.service.OrderItemService;
+import utez.edu.ecommerce.service.ProductService;
 import utez.edu.ecommerce.utils.Message;
 
 import java.math.BigDecimal;
@@ -23,12 +27,17 @@ public class OrderItemController {
 
     private final OrderItemService orderItemService;
     private final OrderItemProductService orderItemProductService;
+    private final ProductService productService;
+    private final DeliveryManService deliveryManService;
 
     @Autowired
-    public OrderItemController(OrderItemService orderItemService, OrderItemProductService orderItemProductService) {
+    public OrderItemController(OrderItemService orderItemService, OrderItemProductService orderItemProductService, ProductService productService, DeliveryManService deliveryManService) {
         this.orderItemService = orderItemService;
         this.orderItemProductService = orderItemProductService;
+        this.productService = productService;
+        this.deliveryManService = deliveryManService;
     }
+
 
     @GetMapping
     public ResponseEntity<List<OrderItem>> getAllOrderItems() {
@@ -103,8 +112,8 @@ public class OrderItemController {
     }
 
     @GetMapping("/count-delivered")
-    public ResponseEntity<Message<Long>> countDeliveredOrderItems() {
-        long count = orderItemService.countOrderItemsByStatusEntregado();
+    public ResponseEntity<Message<Long>> countDeliveredOrderItems(@RequestParam String status) {
+        long count = orderItemService.countOrderItemsByStatusEntregado(status);
         Message<Long> response = new Message<>();
         response.setStatus(HttpStatus.CREATED.value());
         response.setMessage("success");
@@ -120,9 +129,18 @@ public class OrderItemController {
             List<OrderItemProduct> orderItemProducts = orderItem.getOrderItemProducts();
             if (orderItemProducts != null && !orderItemProducts.isEmpty()) {
                 for (OrderItemProduct orderItemProduct : orderItemProducts) {
-                    orderItemProduct.setUser(orderItem.getUser());
-                    orderItemProduct.setOrderItem(createdOrderItem);
-                    orderItemProductService.createOrderItemProduct(orderItemProduct);
+
+                    Product product = productService.getProductById(orderItemProduct.getProduct().getIdProduct());
+                    int newQuantityAvailable = product.getQuantityAvailable() - orderItemProduct.getAmount();
+                    if(newQuantityAvailable < 0) {
+                        System.out.println("Producto sin suficientes existencias en stock");
+                    } else {
+                        orderItemProduct.setUser(orderItem.getUser());
+                        orderItemProduct.setOrderItem(createdOrderItem);
+                        product.setQuantityAvailable(newQuantityAvailable);
+                        productService.updateProduct(product.getIdProduct(), product);
+                        orderItemProductService.createOrderItemProduct(orderItemProduct);
+                    }
                 }
             }
             response.setStatus(HttpStatus.CREATED.value());
@@ -140,16 +158,27 @@ public class OrderItemController {
         OrderItem updatedOrderItem = orderItemService.updateOrderItem(orderItemId, orderItem);
         Message<OrderItem> response = new Message<>();
         if (updatedOrderItem != null) {
+            if (orderItem.getStatus().equals("PAGADO")) {
+                DeliveryMan deliveryMan = deliveryManService.findAvailableDeliveryMan();
+                if (deliveryMan != null) {
+                    updatedOrderItem.setDeliveryMan(deliveryMan);
+                    orderItemService.updateOrderItem(orderItemId, updatedOrderItem);
+                } else {
+                    System.out.println("No hay repartidores disponibles en este momento");
+                }
+            }
             response.setStatus(HttpStatus.CREATED.value());
             response.setMessage("success");
             response.setData(updatedOrderItem);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
+            System.out.println("Me salto todo y ban request");
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.setMessage("order item not found");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+
 
     @DeleteMapping("/products/{orderItemProductId}")
     public ResponseEntity<Message<?>> deleteOrderItemProduct(@PathVariable long orderItemProductId) {
@@ -168,4 +197,24 @@ public class OrderItemController {
         response.setMessage("success");
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+    @GetMapping("/count-orders-by-seller/{sellerId}")
+    public ResponseEntity<Message<Long>> countOrdersBySellerId(@PathVariable long sellerId) {
+        long totalOrders = orderItemProductService.countOrdersBySellerId(sellerId);
+        Message<Long> response = new Message<>();
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("success");
+        response.setData(totalOrders);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/total-income-by-seller/{sellerId}")
+    public ResponseEntity<Message<BigDecimal>> getTotalIncomeBySellerId(@PathVariable long sellerId) {
+        BigDecimal totalIncome = orderItemProductService.getTotalIncomeBySellerId(sellerId);
+        Message<BigDecimal> response = new Message<>();
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("success");
+        response.setData(totalIncome);
+        return ResponseEntity.ok(response);
+    }
+
 }

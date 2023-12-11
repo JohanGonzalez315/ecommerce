@@ -44,6 +44,10 @@ public class DeliveryManServiceImpl implements DeliveryManService {
         return null;
     }
 
+    public DeliveryMan findAvailableDeliveryMan() {
+        return deliveryManRepository.findFirstByAvailable(true);
+    }
+
     @Override
     public boolean deleteDeliveryMan(long deliveryManId) {
         if (deliveryManRepository.existsById(deliveryManId)) {

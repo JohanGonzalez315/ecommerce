@@ -6,5 +6,5 @@ import utez.edu.ecommerce.entity.DeliveryMan;
 
 @Repository
 public interface DeliveryManRepository extends JpaRepository<DeliveryMan, Long> {
-
+    DeliveryMan findFirstByAvailable(boolean available);
 }

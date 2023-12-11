@@ -14,7 +14,7 @@ public interface OrderItemService {
     void deleteOrderItem(long orderItemId);
     OrderItem getOrderItemWithProductsByUserId(long userId);
     BigDecimal getTotalOfOrderItems();
-    long countOrderItemsByStatusEntregado();
+    long countOrderItemsByStatusEntregado(String status);
     int countTotalOrdersByMonth(Date date);
 
 }

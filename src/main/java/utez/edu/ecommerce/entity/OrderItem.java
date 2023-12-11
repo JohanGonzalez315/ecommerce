@@ -22,9 +22,12 @@ public class OrderItem {
     @Column(name = "createdAt")
     private Date createdAt;
     @Column(name = "status", nullable = false, length = 255)
-    private String status = "Pendiente";
+    private String status;
     @Column(name = "subTotal")
     private double subTotal;
+    @ManyToOne
+    @JoinColumn(name = "idDeliveryMan")
+    private DeliveryMan deliveryMan;
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemProduct> orderItemProducts = new ArrayList<>();
 

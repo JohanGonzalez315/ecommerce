@@ -16,5 +16,6 @@ public interface UserService {
     boolean userExistsById(long userId);
     User authenticateUser(String email, String password);
     void deleteUser(long userId);
+    long countUsersByRoleId(long roleId);
 
 }

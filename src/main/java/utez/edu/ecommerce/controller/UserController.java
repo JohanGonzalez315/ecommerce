@@ -112,6 +112,24 @@ public class UserController {
         }
     }
 
+    @GetMapping("/count-users-by-role/{roleId}")
+    public ResponseEntity<Message<Long>> countUsersByRoleId(@PathVariable Long roleId) {
+        long totalUsers = userService.countUsersByRoleId(roleId);
+        Message<Long> response = new Message<>();
+
+        if (totalUsers > 0) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(totalUsers);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: no users found for the given role");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
+
    /* @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable long userId) {
         userService.deleteUser(userId);

@@ -48,18 +48,19 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public OrderItem updateOrderItem(long orderItemId, OrderItem orderItem) {
+    public OrderItem updateOrderItem(long orderItemId, OrderItem updatedOrderItem) {
         Optional<OrderItem> optionalOrderItem = orderItemRepository.findById(orderItemId);
         if (optionalOrderItem.isPresent()) {
             OrderItem existingOrderItem = optionalOrderItem.get();
-            existingOrderItem.setOrderItemProducts(orderItem.getOrderItemProducts());
-            existingOrderItem.setStatus(orderItem.getStatus());
-            existingOrderItem.setUser(orderItem.getUser());
-            existingOrderItem.setSubTotal(orderItem.getSubTotal());
+            existingOrderItem.setStatus(updatedOrderItem.getStatus());
+            existingOrderItem.setUser(updatedOrderItem.getUser());
+            existingOrderItem.setSubTotal(updatedOrderItem.getSubTotal());
+            existingOrderItem.setDeliveryMan(updatedOrderItem.getDeliveryMan());
             return orderItemRepository.save(existingOrderItem);
         }
         return null;
     }
+
     @Override
     public BigDecimal getTotalOfOrderItems() {
         List<OrderItem> orderItems = orderItemRepository.findAll();

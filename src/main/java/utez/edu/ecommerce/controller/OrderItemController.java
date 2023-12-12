@@ -155,28 +155,18 @@ public class OrderItemController {
     }
     @PutMapping("/{orderItemId}")
     public ResponseEntity<Message<OrderItem>> updateOrderItem(@PathVariable long orderItemId, @RequestBody OrderItem orderItem) {
-        OrderItem updatedOrderItem = orderItemService.updateOrderItem(orderItemId, orderItem);
         Message<OrderItem> response = new Message<>();
-        if (updatedOrderItem != null) {
-            if (orderItem.getStatus().equals("PAGADO")) {
-                DeliveryMan deliveryMan = deliveryManService.findAvailableDeliveryMan();
-                if (deliveryMan != null) {
-                    updatedOrderItem.setDeliveryMan(deliveryMan);
-                    orderItemService.updateOrderItem(orderItemId, updatedOrderItem);
-                } else {
-                    System.out.println("No hay repartidores disponibles en este momento");
-                }
-            }
-            response.setStatus(HttpStatus.CREATED.value());
-            response.setMessage("success");
-            response.setData(updatedOrderItem);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } else {
-            System.out.println("Me salto todo y ban request");
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.setMessage("order item not found");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        response.setStatus(HttpStatus.CREATED.value());
+        if(orderItem.getStatus().equals("Pagado")) {
+            DeliveryMan deliveryMan = deliveryManService.findAvailableDeliveryMan();
+            orderItem.setDeliveryMan(deliveryMan);
+            deliveryMan.setAvailable(false);
+            DeliveryMan deliveryNotAvailable = deliveryManService.updateDeliveryMan(deliveryMan.getIdDeliveryMan(), deliveryMan);
         }
+        OrderItem updatedOrderItem = orderItemService.updateOrderItem(orderItemId, orderItem);
+        response.setMessage("success");
+        response.setData(updatedOrderItem);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 

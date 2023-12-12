@@ -12,4 +12,5 @@ public interface SellerIdentityService {
     SellerIdentity updateUser(long sellerId, SellerIdentity sellerIdentity);
     boolean existsByUserId(long userId);
     void deleteUser(long userId);
+    SellerIdentity getSellerIdentityByUserId(long userId);
 }

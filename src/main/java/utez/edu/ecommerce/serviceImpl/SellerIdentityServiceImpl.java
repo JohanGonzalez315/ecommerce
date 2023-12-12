@@ -56,4 +56,9 @@ public class SellerIdentityServiceImpl implements SellerIdentityService {
 
     }
 
+    @Override
+    public SellerIdentity getSellerIdentityByUserId(long userId) {
+        return sellerIdentityRepository.findByUser_IdUser(userId);
+    }
+
 }

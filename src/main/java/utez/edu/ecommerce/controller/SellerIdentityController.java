@@ -81,6 +81,22 @@ public class SellerIdentityController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/by-user/{userId}")
+    public ResponseEntity<Message<SellerIdentity>> getSellerIdentityByUserId(@PathVariable long userId) {
+        SellerIdentity sellerIdentity = sellerIdentityService.getSellerIdentityByUserId(userId);
+        Message<SellerIdentity> response = new Message<>();
+        if (sellerIdentity != null) {
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("success");
+            response.setData(sellerIdentity);
+            return ResponseEntity.ok(response);
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("error: SellerIdentity not found for this user");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+    }
+
 
 
     @PutMapping("/{sellerId}")

@@ -8,4 +8,5 @@ import utez.edu.ecommerce.entity.SellerIdentity;
 @Repository
 public interface SellerIdentityRepository extends JpaRepository<SellerIdentity, Long> {
     boolean existsByUser_IdUser(long userId);
+    SellerIdentity findByUser_IdUser(long userId);
 }

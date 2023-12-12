@@ -34,8 +34,18 @@ public class Product {
     private String description;
     @Column(name = "tags", nullable = false, length = 255)
     private String tags;
+    @Column(name = "rating", nullable = false)
+    private double rating;
 
     @PrePersist
     public void prePersist(){this.quantitySold=0;}
-    
+
+    public void updateRating(List<ProductRating> productRatings) {
+        if (productRatings != null && !productRatings.isEmpty()) {
+            double totalRating = productRatings.stream().mapToDouble(ProductRating::getRating).sum();
+            this.setRating(totalRating / productRatings.size());
+        } else {
+            this.setRating(0.0);
+        }
+    }
 }

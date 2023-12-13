@@ -161,7 +161,7 @@ public class OrderItemController {
         if(orderItem.getStatus().equals("Pagado")) {
             deliveryMan = deliveryManService.findAvailableDeliveryMan();
             orderItem.setDeliveryMan(deliveryMan);
-        }else if (orderItem.getStatus().equals("Entregado")) {
+        }else if (orderItem.getStatus().equals("Entregado") || orderItem.getStatus().equals("Cancelado")) {
             OrderItem orderItem1 = orderItemService.getOrderItemById(orderItemId);
             deleteOrderItemToDeliveryMan(orderItem1.getDeliveryMan());
             orderItem.setDeliveryMan(orderItem1.getDeliveryMan());

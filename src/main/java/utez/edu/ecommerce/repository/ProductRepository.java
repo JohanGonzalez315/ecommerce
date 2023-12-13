@@ -3,6 +3,7 @@ package utez.edu.ecommerce.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import utez.edu.ecommerce.entity.Product;
 
 import java.util.List;
@@ -21,5 +22,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "GROUP BY p.category.name " +
             "ORDER BY totalSold DESC")
     List<Map<String, Object>> getMostSoldCategories();
+
+    @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.tags LIKE %:keyword%")
+    List<Product> findByNameOrTagsContaining(@Param("keyword") String keyword);
+
 
 }

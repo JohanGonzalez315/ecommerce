@@ -64,7 +64,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> getProductsByName(String name) {
-        return productRepository.findByNameContainingIgnoreCase(name);
+        return productRepository.findByNameOrTagsContaining(name);
     }
     @Override
     public List<Product> getTopSellingProducts(int limit) {

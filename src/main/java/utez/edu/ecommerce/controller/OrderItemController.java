@@ -157,16 +157,32 @@ public class OrderItemController {
     public ResponseEntity<Message<OrderItem>> updateOrderItem(@PathVariable long orderItemId, @RequestBody OrderItem orderItem) {
         Message<OrderItem> response = new Message<>();
         response.setStatus(HttpStatus.CREATED.value());
+        DeliveryMan deliveryMan = new DeliveryMan();
         if(orderItem.getStatus().equals("Pagado")) {
-            DeliveryMan deliveryMan = deliveryManService.findAvailableDeliveryMan();
+            deliveryMan = deliveryManService.findAvailableDeliveryMan();
             orderItem.setDeliveryMan(deliveryMan);
-            deliveryMan.setAvailable(false);
-            DeliveryMan deliveryNotAvailable = deliveryManService.updateDeliveryMan(deliveryMan.getIdDeliveryMan(), deliveryMan);
+        }else if (orderItem.getStatus().equals("Entregado")) {
+            OrderItem orderItem1 = orderItemService.getOrderItemById(orderItemId);
+            deleteOrderItemToDeliveryMan(orderItem1.getDeliveryMan());
+            orderItem.setDeliveryMan(orderItem1.getDeliveryMan());
         }
         OrderItem updatedOrderItem = orderItemService.updateOrderItem(orderItemId, orderItem);
+        saveOrderItemToDeliveryMan(deliveryMan, updatedOrderItem);
         response.setMessage("success");
         response.setData(updatedOrderItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    public void saveOrderItemToDeliveryMan(DeliveryMan deliveryMan, OrderItem orderItem){
+        deliveryMan.setAvailable(false);
+        deliveryMan.setOrderItem(orderItem);
+        deliveryManService.updateDeliveryMan(deliveryMan.getIdDeliveryMan(), deliveryMan);
+    }
+
+    public void deleteOrderItemToDeliveryMan(DeliveryMan deliveryMan){
+        deliveryMan.setAvailable(true);
+        deliveryMan.setOrderItem(null);
+        deliveryManService.updateDeliveryMan(deliveryMan.getIdDeliveryMan(), deliveryMan);
     }
 
 

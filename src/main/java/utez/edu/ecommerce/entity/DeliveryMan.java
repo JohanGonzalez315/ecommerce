@@ -17,5 +17,8 @@ public class DeliveryMan {
     private String licensePhoto;
     @Column(name = "available")
     private boolean available;
+    @OneToOne
+    @JoinColumn(name = "idOrderItems")
+    private OrderItem orderItem;
 
 }

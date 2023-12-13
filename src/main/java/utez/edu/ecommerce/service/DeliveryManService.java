@@ -12,4 +12,6 @@ public interface DeliveryManService {
     DeliveryMan updateDeliveryMan(long deliveryManId, DeliveryMan deliveryMan);
     boolean deleteDeliveryMan(long deliveryManId);
     DeliveryMan findAvailableDeliveryMan();
+
+    DeliveryMan assignOrderToDeliveryMan(long deliveryManId, long orderId);
 }

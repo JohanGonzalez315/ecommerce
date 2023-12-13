@@ -11,6 +11,7 @@ import java.util.Map;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryName(String categoryName);
     List<Product> findByNameContainingIgnoreCase(String name);
+    List<Product> findAllBySeller_IdSeller(long idSeller);
 
     @Query(value = "SELECT p FROM Product p ORDER BY p.quantitySold DESC")
     List<Product> findTopProductsByQuantitySold(Pageable pageable);

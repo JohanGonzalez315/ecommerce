@@ -151,6 +151,17 @@ public class ProductController {
        response.setData(createdProduct);
        return ResponseEntity.status(HttpStatus.CREATED).body(response);
    }
+
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<Message<List<Product>>> getProductsBySellerId(@PathVariable long sellerId) {
+        List<Product> products = productService.getProductsBySellerId(sellerId);
+        Message<List<Product>> response = new Message<>();
+
+        response.setStatus(HttpStatus.CREATED.value());
+        response.setMessage("success");
+        response.setData(products);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
    
    @PostMapping("addImages/{productId}")
    public ResponseEntity<Message<Product>> addProductImages(@PathVariable long productId, @RequestPart List<MultipartFile> images) {

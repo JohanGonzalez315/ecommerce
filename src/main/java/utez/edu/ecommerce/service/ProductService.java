@@ -13,6 +13,7 @@ public interface ProductService {
     Product getProductById(long productId);
     Product createProduct(Product product);
     Product updateProduct(long productId, Product product);
+    List<Product> getProductsBySellerId(long sellerId);
     void deleteProduct(long productId);
     @Query("SELECT p FROM Product p WHERE p.category.name = :categoryName")
     List<Product> getProductsByCategory(@Param("categoryName") String categoryName);

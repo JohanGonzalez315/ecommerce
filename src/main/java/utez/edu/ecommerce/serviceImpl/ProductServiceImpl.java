@@ -28,6 +28,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> getProductsBySellerId(long sellerId) {
+        return productRepository.findAllBySeller_IdSeller(sellerId);
+    }
+
+    @Override
     public Product getProductById(long productId) {
         Optional<Product> product = productRepository.findById(productId);
         return product.orElse(null);

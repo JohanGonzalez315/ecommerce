@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Date;
 
@@ -30,9 +31,18 @@ public class OrderItem {
     private DeliveryMan deliveryMan;
     @OneToMany(mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemProduct> orderItemProducts = new ArrayList<>();
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "date_of_delivery")
+    private Date dateOfDelivery;
 
     @PrePersist
-    public void prePersist(){this.createdAt = new Date();}
+    public void prePersist(){
+        this.createdAt = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(this.createdAt);
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        this.dateOfDelivery = calendar.getTime();
+    }
     public BigDecimal calculateTotalPrice() {
         BigDecimal totalPrice = BigDecimal.ZERO;
         for (OrderItemProduct orderItemProduct : this.orderItemProducts) {
@@ -42,5 +52,6 @@ public class OrderItem {
         }
         return totalPrice;
     }
+
 
 }
